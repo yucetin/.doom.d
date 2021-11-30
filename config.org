@@ -1,0 +1,168 @@
+#+TITLE: Config in org mode
+#+property: header-args:emacs-lisp :tangle ./config.el
+
+*After changing this file, you can run M-x babel-tangle to compile the emacs-lisp code blocks into config.el*
+*You will need to reload Doom to see the changes without restarting emacs*
+
+* Default config.el
+
+$DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+Private configuration is here! Remember, you do not need to run 'doom
+sync' after modifying this file!
+
+
+Some functionality uses this to identify you, e.g. GPG configuration, email
+clients, file templates and snippets.
+
+#+begin_src emacs-lisp
+(setq user-full-name "Kemal Yucetin"
+      user-mail-address "")
+#+end_src
+
+Doom exposes five (optional) variables for controlling fonts in Doom. Here
+are the three important ones:
+
++ `doom-font'
++ `doom-variable-pitch-font'
++ `doom-big-font' -- used for `doom-big-font-mode'; use this for
+  presentations or streaming.
+
+They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+font string. You generally only need these two:
+(setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+There are two ways to load a theme. Both assume the theme is installed and
+available. You can either set `doom-theme' or manually load a theme with the
+`load-theme' function. This is the default:
+
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-one)
+#+end_src
+
+If you use `org' and don't want your org files in the default location below,
+change `org-directory'. It must be set before org loads!
+#+begin_src emacs-lisp
+(setq org-directory "~/org/")
+#+end_src
+
++ This determines the style of line numbers in effect. If set to `nil', line numbers are disabled. For relative line numbers, set this to `relative'.
++ Doom add hl-line by default, remove hook disables globally
+#+begin_src emacs-lisp
+(setq display-line-numbers-type t)
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+#+end_src
+
+Here are some additional functions/macros that could help you onfigure Doom:
+
+- `load!' for loading external *.el files relative to this one
+- `use-package!' for configuring packages
+- `after!' for running code after a package has loaded
+- `add-load-path!' for adding directories to the `load-path', relative to
+  this file. Emacs searches the `load-path' when you load packages with
+  `require' or `use-package'.
+- `map!' for binding new keys
+
+To get information about any of these functions/macros, move the cursor over
+the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+This will open documentation for it, including demos of how they are used.
+
+You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+they are implemented.
+
+* Fonts
+Settings related to fonts within Doom Emacs:
++ 'doom-font' standard monospace font is used for most things in Emacs.
++ 'doom-variable-pitch-font' is useful in some Emacs plugins.
++ 'doom-big-font' used in doom-big-font-mode; useful for presentations, high DPI monitors or pairing with old people.
++ 'font-lock-comment-face' for comments.
++ 'font-lock-keyword-face' for special keywords like def, for and if.
+
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Hack Nerd Font" :size 16)
+      doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 16)
+      doom-big-font (font-spec :family "Hack Nerd Font" :size 22))
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
+#+end_src
+
+* Org mode
+#+begin_src emacs-lisp
+(after! org
+  (setq org-hide-emphasis-markers t))
+#+end_src
+
+* Windows
++ Start emacs in maximized frame, not full
++ Split windows to right and below
++ Ask which buffer we wanted to see ^^
++ Wrap the long lines
++ Show arrow on wrapped lines
+#+begin_src emacs-lisp
+(add-hook 'window-setup-hook #'toggle-frame-maximized)
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (consult-buffer))
+(global-visual-line-mode)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+#+end_src
+
+* Files
++ Auto save activated by default
+#+begin_src emacs-lisp
+(setq frame-title-format
+      '(""
+        (:eval
+         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+             (replace-regexp-in-string
+              ".*/[0-9]*-?" "☰ "
+              (subst-char-in-string ?_ ?  buffer-file-name))
+           "%b"))
+        (:eval
+         (let ((project-name (projectile-project-name)))
+           (unless (string= "-" project-name)
+             (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
+#+end_src
+
+* Registers
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Copy to register"
+      "r c" #'copy-to-register
+      :desc "List register"
+      "r l" #'list-registers)
+#+end_src
+
+* RSS
+#+begin_src emacs-lisp
+
+(after! elfeed
+  (setq elfeed-search-filter "@3-years-ago +unread"))
+
+#+end_src
+
+* Switch themes
++ Switch to the doom light theme
++ Switch to the doom dark theme
+#+begin_src emacs-lisp
+(defun load-light-theme ()
+  (interactive)
+  (load-theme 'doom-one-light t)
+  (doom/reload-theme))
+
+(defun load-dark-theme ()
+  (interactive)
+  (load-theme 'doom-one t)
+  (doom/reload-theme))
+#+end_src
+* Projectile
+#+begin_src emacs-lisp
+(setq projectile-project-search-path '("~/whitehat/" "~/code")  )
+#+end_src
