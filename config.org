@@ -166,3 +166,15 @@ Settings related to fonts within Doom Emacs:
 #+begin_src emacs-lisp
 (setq projectile-project-search-path '("~/whitehat/" "~/code")  )
 #+end_src
+* WakaTime setup
+#+begin_src emacs-lisp
+;; (use-package wakatime-mode :ensure t)
+;; (global-wakatime-mode)
+#+end_src
+#+begin_src emacs-lisp
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+)
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+#+end_src

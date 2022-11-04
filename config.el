@@ -63,3 +63,12 @@
   (doom/reload-theme))
 
 (setq projectile-project-search-path '("~/whitehat/" "~/code")  )
+
+;; (use-package wakatime-mode :ensure t)
+;; (global-wakatime-mode)
+
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+)
+(add-hook 'web-mode-hook  'my-web-mode-hook)

@@ -80,8 +80,8 @@
 
        :checkers
        syntax            ; tasing you for every semicolon you forget
-       ;; spell          ; tasing you for misspelling mispelling
-       ;; grammar        ; tasing grammar mistake every you make
+       spell          ; tasing you for misspelling mispelling
+       grammar        ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
@@ -135,7 +135,7 @@
        ;;(haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
-       ;;json              ; At least it ain't XML
+       json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
@@ -167,8 +167,8 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
-       ;;yaml              ; JSON, but readable
+       (web +html +css)               ; the tubes
+       yaml              ; JSON, but readable
        ;;zig               ; C, but simpler
 
        :email
@@ -187,9 +187,3 @@
        :config
        literate
        (default +bindings +smartparens))
-(after! projectile
-  (setq projectile-indexing-method 'alien
-        projectile-files-cache-expire 5))
-
-(setq org-agenda-files '("~/org/todo.org", "~/org/notes.org"))
-(setq org-agenda-span 'week)
